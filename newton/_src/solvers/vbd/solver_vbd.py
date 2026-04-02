@@ -331,6 +331,8 @@ class SolverVBD(SolverBase):
 
         # Cached empty arrays for kernels that require wp.array arguments even when counts are zero.
         self._empty_body_q = wp.empty(0, dtype=wp.transform, device=self.device)
+        self.joint_lin_violation = wp.zeros(model.joint_count, dtype=float, device=self.device)
+        self.joint_ang_violation = wp.zeros(model.joint_count, dtype=float, device=self.device)
 
     def _init_particle_system(
         self,
@@ -2178,6 +2180,9 @@ class SolverVBD(SolverBase):
                     model.joint_limit_lower,
                     model.joint_limit_upper,
                     model.joint_limit_ke,
+                    # ADD: violation output arrays
+                    self.joint_lin_violation,
+                    self.joint_ang_violation,
                 ],
                 device=self.device,
             )

@@ -2820,6 +2820,8 @@ def update_duals_joint(
     joint_limit_lower: wp.array[float],
     joint_limit_upper: wp.array[float],
     joint_limit_ke: wp.array[float],
+    joint_lin_violation: wp.array[float],
+    joint_ang_violation: wp.array[float],
 ):
     """
     Update AVBD penalty parameters for joint constraints and drive/limits (per-iteration).
@@ -2966,6 +2968,9 @@ def update_duals_joint(
         C_ang = wp.length(kappa)
         k_ang = joint_penalty_k[i_ang]
         joint_penalty_k[i_ang] = wp.min(k_ang + beta * C_ang, joint_penalty_k_max[i_ang])
+        
+        joint_lin_violation[j] = C_lin
+        joint_ang_violation[j] = C_ang
         return
 
     # REVOLUTE joint: isotropic linear + perpendicular angular penalties (2 scalars).
